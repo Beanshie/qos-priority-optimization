@@ -1,3 +1,0 @@
-C:/Workspace/studia/ASD/Projekt_QoS/build/CMakeFiles/Projekt_QoS.dir
-C:/Workspace/studia/ASD/Projekt_QoS/build/CMakeFiles/edit_cache.dir
-C:/Workspace/studia/ASD/Projekt_QoS/build/CMakeFiles/rebuild_cache.dir

@@ -1,3 +1,0 @@
-C:\Programs\VS\Common7\IDE\CommonExtensions\Microsoft\CMake\CMake\bin\cmake.exe -E rm -f CMakeFiles\Projekt_QoS.dir/objects.a
-C:\Programs\msys2\ucrt64\bin\ar.exe qc CMakeFiles\Projekt_QoS.dir/objects.a @CMakeFiles\Projekt_QoS.dir\objects1.rsp
-C:\Programs\msys2\ucrt64\bin\g++.exe -O3 -DNDEBUG -Wl,--whole-archive CMakeFiles\Projekt_QoS.dir/objects.a -Wl,--no-whole-archive -o Projekt_QoS.exe -Wl,--out-implib,libProjekt_QoS.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\Projekt_QoS.dir\linkLibs.rsp
