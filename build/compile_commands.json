@@ -1,0 +1,26 @@
+[
+{
+  "directory": "C:/Workspace/studia/ASD/Projekt_QoS/build",
+  "command": "C:\\Programs\\msys2\\ucrt64\\bin\\g++.exe  @CMakeFiles/Projekt_QoS.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++20 -o CMakeFiles\\Projekt_QoS.dir\\src\\main.cpp.obj -c C:\\Workspace\\studia\\ASD\\Projekt_QoS\\src\\main.cpp",
+  "file": "C:/Workspace/studia/ASD/Projekt_QoS/src/main.cpp",
+  "output": "CMakeFiles/Projekt_QoS.dir/src/main.cpp.obj"
+},
+{
+  "directory": "C:/Workspace/studia/ASD/Projekt_QoS/build",
+  "command": "C:\\Programs\\msys2\\ucrt64\\bin\\g++.exe  @CMakeFiles/Projekt_QoS.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++20 -o CMakeFiles\\Projekt_QoS.dir\\src\\MaxHeap.cpp.obj -c C:\\Workspace\\studia\\ASD\\Projekt_QoS\\src\\MaxHeap.cpp",
+  "file": "C:/Workspace/studia/ASD/Projekt_QoS/src/MaxHeap.cpp",
+  "output": "CMakeFiles/Projekt_QoS.dir/src/MaxHeap.cpp.obj"
+},
+{
+  "directory": "C:/Workspace/studia/ASD/Projekt_QoS/build",
+  "command": "C:\\Programs\\msys2\\ucrt64\\bin\\g++.exe  @CMakeFiles/Projekt_QoS.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++20 -o CMakeFiles\\Projekt_QoS.dir\\src\\UnorderedArray.cpp.obj -c C:\\Workspace\\studia\\ASD\\Projekt_QoS\\src\\UnorderedArray.cpp",
+  "file": "C:/Workspace/studia/ASD/Projekt_QoS/src/UnorderedArray.cpp",
+  "output": "CMakeFiles/Projekt_QoS.dir/src/UnorderedArray.cpp.obj"
+},
+{
+  "directory": "C:/Workspace/studia/ASD/Projekt_QoS/build",
+  "command": "C:\\Programs\\msys2\\ucrt64\\bin\\g++.exe  @CMakeFiles/Projekt_QoS.dir/includes_CXX.rsp -O3 -DNDEBUG -std=c++20 -o CMakeFiles\\Projekt_QoS.dir\\src\\DataGenerator.cpp.obj -c C:\\Workspace\\studia\\ASD\\Projekt_QoS\\src\\DataGenerator.cpp",
+  "file": "C:/Workspace/studia/ASD/Projekt_QoS/src/DataGenerator.cpp",
+  "output": "CMakeFiles/Projekt_QoS.dir/src/DataGenerator.cpp.obj"
+}
+]
