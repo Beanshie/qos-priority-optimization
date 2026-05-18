@@ -1,0 +1,10 @@
+# Foldery z plikami budowania (CMake)
+build/
+Release/
+Debug/
+.cmake/
+
+# Pliki wykonywalne
+*.exe
+*.out
+*.app
