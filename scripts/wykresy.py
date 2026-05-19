@@ -2,65 +2,89 @@ import os
 import pandas as pd
 import matplotlib.pyplot as plt
 
-# 1. Dynamiczne ustalanie ścieżek (żeby skrypt działał niezależnie od tego skąd go odpalasz)
+# 1. Ustalanie ścieżek
 current_dir = os.path.dirname(os.path.abspath(__file__))
 csv_path = os.path.join(current_dir, '../results/wyniki.csv')
 plots_dir = os.path.join(current_dir, '../results/plots')
-
-# Upewniamy się, że folder na wykresy istnieje (jak nie ma, to go tworzy)
 os.makedirs(plots_dir, exist_ok=True)
 
-# 2. Wczytanie surowych danych z C++
+# 2. Wczytanie danych z C++
 try:
     df = pd.read_csv(csv_path, sep=';')
 except FileNotFoundError:
     print(f"Błąd: Nie znaleziono pliku {csv_path}!")
-    print("Upewnij się, że najpierw uruchomiłeś program w C++ i wygenerowałeś dane!")
+    print("Upewnij się, że najpierw uruchomiłeś program w C++!")
     exit(1)
 
-# Pobieramy unikalne scenariusze z kolumny w pliku CSV
-scenarios = df['Scenariusz'].unique()
+# Mapowanie stylów dla scenariuszy (różne symbole/markery)
+scenarios = {
+    'Uniform': {'marker': 'o', 'suffix': ' (Ruch Losowy)'},
+    'Sorted':  {'marker': 's', 'suffix': ' (Najgorszy Przypadek)'},
+    'Burst':   {'marker': '^', 'suffix': ' (Atak DDoS)'}
+}
 
-print("Generowanie wykresów...")
+# Unikalne kolory dla każdej kombinacji, żeby wykres był czytelny
+colors = {
+    ('Tablica', 'Uniform'): '#e74c3c',  # Czerwony
+    ('Tablica', 'Sorted'):  # Ciemnoczerwony
+    '#962d22',  
+    ('Tablica', 'Burst'):   '#e67e22',  # Pomarańczowy
+    ('Kopiec', 'Uniform'):  '#2ecc71',  # Jasnozielony
+    ('Kopiec', 'Sorted'):   '#16a085',  # Morska zieleń
+    ('Kopiec', 'Burst'):    '#2980b9'   # Niebieski
+}
 
-# 3. Pętla rysująca osobny wykres dla każdego scenariusza ruchu sieciowego
-for scenario in scenarios:
-    # Filtrujemy dane tylko dla obecnego scenariusza
-    scenario_data = df[df['Scenariusz'] == scenario]
+# 3. Funkcja generująca wykres zbiorczy
+def generate_combined_plot(is_log_log=False):
+    plt.figure(figsize=(11, 7))
     
-    # Tworzymy nowe płótno wykresu (wielkość 10x6 cali)
-    plt.figure(figsize=(10, 6))
-    
-    # Konwertujemy czasy z mikrosekund na milisekundy (dzieląc przez 1000) dla czytelności raportu
-    time_array_ms = scenario_data['Czas_Tablicy'] / 1000
-    time_heap_ms = scenario_data['Czas_Kopca'] / 1000
-    
-    # Rysujemy linie (marker 'o' dodaje kropki na zgięciach linii dla Tablicy, a 's' to kwadraty dla Kopca)
-    plt.plot(scenario_data['Rozmiar'], time_array_ms, marker='o', linewidth=2.5, color='#e74c3c', label='Tablica Nieuporządkowana O(N)')
-    plt.plot(scenario_data['Rozmiar'], time_heap_ms, marker='s', linewidth=2.5, color='#2ecc71', label='Kopiec Binarny O(log N)')
-    
-    # Nadajemy profesjonalny tytuł i opisy osi
-    plt.title(f'Wydajność algorytmów QoS - Scenariusz: {scenario}', fontsize=14, fontweight='bold', pad=15)
+    # Rysujemy linie dla każdego scenariusza po kolei
+    for scenario, style in scenarios.items():
+        scenario_data = df[df['Scenariusz'] == scenario]
+        if scenario_data.empty:
+            continue
+            
+        sizes = scenario_data['Rozmiar']
+        time_array_ms = scenario_data['Czas_Tablicy'] / 1000
+        time_heap_ms = scenario_data['Czas_Kopca'] / 1000
+        
+        # Linia dla Tablicy (Linia ciągła)
+        plt.plot(sizes, time_array_ms, 
+                 marker=style['marker'], markersize=8, linewidth=2,
+                 color=colors[('Tablica', scenario)], 
+                 label=f"Tablica{style['suffix']}")
+        
+        # Linia dla Kopca (Linia przerywana dla odróżnienia struktur)
+        plt.plot(sizes, time_heap_ms, 
+                 marker=style['marker'], markersize=8, linewidth=2, linestyle='--',
+                 color=colors[('Kopiec', scenario)], 
+                 label=f"Kopiec{style['suffix']}")
+        
+    # Dobieranie ustawień osi i opisów
     plt.xlabel('Liczba pakietów w kolejce (N)', fontsize=11, labelpad=10)
     plt.ylabel('Całkowity czas przetwarzania [ms]', fontsize=11, labelpad=10)
+    plt.grid(True, linestyle='--', alpha=0.5, which="both")
     
-    # Dodajemy siatkę pomocniczą w tle (dla inżynierskiego sznytu)
-    plt.grid(True, linestyle='--', alpha=0.6)
-    
-    # Dodajemy legendę
-    plt.legend(fontsize=11, loc='upper left')
-    
-    # Formatujemy liczby na osi X, żeby pokazywały np. 100000 zamiast 1e5
-    plt.ticklabel_format(style='plain', axis='x')
-    
-    # Zapisujemy plik PNG w najwyższej rozdzielczości (dpi=300 - idealne do Worda/PDF)
-    plot_filename = f'wykres_{scenario.lower()}.png'
-    plot_save_path = os.path.join(plots_dir, plot_filename)
-    
-    # bbox_inches='tight' zapobiega ucinaniu napisów na brzegach obrazka
-    plt.savefig(plot_save_path, dpi=300, bbox_inches='tight')
-    plt.close() # Czyścimy pamięć przed następną iteracją pętli
-    
-    print(f"-> Zapisano: results/plots/{plot_filename}")
+    if is_log_log:
+        plt.xscale('log')
+        plt.yscale('log')
+        plt.title('Porównanie Wydajności Algorytmów QoS (Skala LOG-LOG)', fontsize=13, fontweight='bold', pad=15)
+        filename = 'wykres_zbiorczy_loglog.png'
+        plt.legend(fontsize=9, loc='lower right') # W log-log na dole po prawej jest pusto
+    else:
+        plt.ticklabel_format(style='plain', axis='x')
+        plt.title('Porównanie Wydajności Algorytmów QoS (Skala Liniowa)', fontsize=13, fontweight='bold', pad=15)
+        filename = 'wykres_zbiorczy_liniowy.png'
+        plt.legend(fontsize=9, loc='upper left') # W liniowym u góry po lewej jest najbezpieczniej
+        
+    # Zapis pliku
+    save_path = os.path.join(plots_dir, filename)
+    plt.savefig(save_path, dpi=300, bbox_inches='tight')
+    plt.close()
+    print(f"-> Pomyślnie wygenerowano: results/plots/{filename}")
 
-print("\nWszystkie wykresy zostały pomyślnie wygenerowane i zapisane!")
+# Odpalenie generatora dla obu skal
+print("Uruchamianie analizy graficznej...")
+generate_combined_plot(is_log_log=False)
+generate_combined_plot(is_log_log=True)
+print("Wykresy są gotowe do wklejenia do sprawozdania!")
